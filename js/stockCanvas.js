@@ -3,14 +3,14 @@
  */
 var stock = require('./Stock');
 var fRate = 500;
-var marketAPR = 0.08;
-var volatility = 0.32;
+var marketAPR = 0.05;
+var volatility = 0.10;
 var testLength = 2400;
 //*** New Price Function Declarations***//
 var time = Math.random()* 100;
 var minY = 0;
 var maxY;
-var max = 0;
+
 var stockGraph = function(p) {
     p.setup = function () {
         p.createCanvas(800, 400);
@@ -21,8 +21,7 @@ var stockGraph = function(p) {
     p.draw = function () {
         stock.priceHistory.push(stock.price);
         p.frameRate(fRate);
-        var dollarChange = stock.price*priceChange();
-        stock.price += dollarChange;
+        stock.price += stock.price * priceChange();
         //console.log(stock.price);
         drawStockChart(stock.price);
         stock.tradeDay++;
@@ -37,19 +36,12 @@ var stockGraph = function(p) {
     var priceChange = function() {
         var n = p.map(p.noise(time),0,1,-1,1);
         var n2 = p.pow(n, 3);
-        var n3 = p.map(n2, -1, 1, minY, maxY);
-        //var diff = ((n3 - minY)-200)/10;
-        /*if (diff > max) {
-            max = diff;
-        }
-        console.log("n3 - minY: " + diff);
-        console.log("Max: " + max);*/
+        var n3 = p.map(n2, -1, 1, minY + 2, maxY + 2);
+
         var percentChange = ((n3 - minY)-(maxY - minY)/2)/10;
-        //console.log("maxY: " + maxY);
-        //console.log("pChange: " + pChange);
-        //var yPrice = p.map(n,0,1,minY/3, maxY/3);
+
         // Move forward in time
-        //minY += marketAPR;
+        minY += marketAPR;
         maxY += marketAPR;
         time += volatility;
         console.log("percentChange: " + percentChange);
