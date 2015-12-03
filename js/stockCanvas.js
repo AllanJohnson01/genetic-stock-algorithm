@@ -3,9 +3,6 @@
  */
 var stock = require('./Stock');
 var fRate = 500;
-var marketAPR = 10.0;
-var dailyPerRate = marketAPR/250;
-var volatility = 0.3;
 var testLength = 2510;
 //*** New Price Function Declarations***//
 var time = Math.random()* 100;
@@ -40,9 +37,10 @@ var stockGraph = function(p) {
         var n3 = p.map(n2, -1, 1, minY, maxY);
         var newPrice = n3 - (p.height/2 - stock.priceHistory[0]);
         // Moving forward in time
+        var dailyPerRate = stock.apr/250;
         minY += dailyPerRate;
         maxY += dailyPerRate;
-        time += volatility;
+        time += stock.volatility;
         console.log("newPrice: " + newPrice);
         return newPrice;
     };
