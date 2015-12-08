@@ -2,9 +2,10 @@
  * Created by adjohnso on 12/1/2015.
  */
 function Stock(config)  {
-    this.price  = config.price | 150;
+    this.startPrice = config.price | 150;
+    this.price  = this.startPrice;
     this.tradeDay = 0;
-    this.apr = 10;
+    this.apr = 0;
     this.volatility = 0.3;
     this.priceHistory = [this.price];
     var i = 0;
@@ -15,5 +16,5 @@ function Stock(config)  {
         }
     }
 }
-var stock = new Stock();
+var stock = new Stock({startPrice: 150});
 module.exports = stock;

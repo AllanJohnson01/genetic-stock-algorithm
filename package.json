@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "stock-simulation",
   "version": "1.0.0",
   "description": "testing webpack",
   "main": "js/index.js",
@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --progress --colors"
   },
   "keywords": [
-    "test",
+    "genetic algorithm",
     "webpack"
   ],
   "author": "AJ",
