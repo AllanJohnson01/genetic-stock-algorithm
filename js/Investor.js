@@ -3,25 +3,27 @@
  */
 var stock = require("./Stock");
 
-function Investor(config) {
+function Investor() {
     var startNetWorth = 50000;
-    this.initInvestPercent = config.initInvestPercent;
+    //this.initInvestPercent = config.initInvestPercent | 50;
     this.cash = startNetWorth/2;
     this.sharesOwned = (startNetWorth/2)/stock.startPrice;
-    this.wealth = this.cash + (this.sharesOwned * stock.price);
-    this.gain = (this.wealth - startNetWorth) / startNetWorth;
+    this.wealth = function () {
+        return this.cash + (this.sharesOwned * stock.price);
+    }
+    this.gain = function() {
+        return (this.wealth - startNetWorth) / startNetWorth;
+    }
     var sellRules = [];
     var buyRules = [];
     var buyRule = function(pOff, pTrade) {
-        if (stock.price - stock.startPrice > pOff) {
-            this.buy(pTrade);
-        }
+        this.pOff = pOff;
+        this.pTrade = pTrade;
     };
 
     var sellRule = function(pOff, pTrade) {
-        if (stock.price - stock.startPrice > pOff) {
-            this.sell(pTrade);
-        }
+        this.pOff = pOff;
+        this.pTrade = pTrade;
     };
 
     this.buy = function(perToTrade) {
@@ -46,13 +48,23 @@ function Investor(config) {
     };
 
     this.sellDecision = function() {
-
+        for (rule in sellRules) {
+            if (stock.price - stock.startPrice > this.pOff) {
+                this.sell(this.pTrade);
+            }
+        }
     };
 
     this.buyDecision = function() {
-
+        for (rule in buyRules) {
+            if (stock.price - stock.startPrice > this.pOff) {
+                this.buy(this.pTrade);
+            }
+        }
     };
-
+    this.getBuyRules = function () {
+        return buyRules;
+    }
 
 
 
