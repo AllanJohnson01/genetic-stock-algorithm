@@ -13,7 +13,6 @@ function Population(mutationRate, numOfInvestors) {
     for (var i = 0; i < numOfInvestors; i++) {
         var dna = new DNA;
         dna.firstDNA();
-        //dna.DNA();
         population[i] = new Investor({dna: dna});
     }
 
@@ -31,7 +30,9 @@ function Population(mutationRate, numOfInvestors) {
     };
     this.generationReport = function(g) {
         population.sort(function(a, b) {
-            return a.wealth() - b.wealth();
+            if (a.wealth() < b.wealth()) return 1;
+            if (a.wealth() > b.wealth()) return -1;
+            return 0;
         });
         //for (var i = 0; i < population.length; i++) {
             console.log("Generation " + g + " Investor 0's sharesOwned: " + population[0].sharesOwned);

@@ -11,9 +11,8 @@ var maxY;
 var Population = require('./Population');
 var pop;
 var generation = 1;
-var numOfInvestors = 200;
-var mutationRate = 0.00;
-
+var numOfInvestors = 10;
+var mutationRate = 0.01;
 
 var stockGraph = function(p) {
     p.setup = function () {
@@ -29,13 +28,11 @@ var stockGraph = function(p) {
         stock.price = priceChange();
         drawStockChart(stock.price);
         pop.checkDecisions();
-
         stock.tradeDay++;
         if (stock.tradeDay % testLength == 0) {
             pop.generationReport(generation);
             pop.selection();
             pop.reproduction();
-            //p.noLoop();
             generation++;
         }
     };
@@ -57,6 +54,7 @@ var stockGraph = function(p) {
         //console.log("newPrice: " + newPrice);
         return newPrice;
     };
+
 
 //////////////////////////////////
     var drawStockChart = function(yPrice) {
@@ -92,7 +90,6 @@ var stockGraph = function(p) {
         drawTickMarks();
         p.pop();
     };
-
 };
 new p5(stockGraph);
 
