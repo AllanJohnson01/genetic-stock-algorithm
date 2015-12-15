@@ -12,38 +12,36 @@ function Population(mutationRate, numOfInvestors) {
     var generations = 0;
     for (var i = 0; i < numOfInvestors; i++) {
         var dna = new DNA;
+        dna.firstDNA();
         //dna.DNA();
         population[i] = new Investor({dna: dna});
-        console.log("test: " + population[i].dna.genes[0].buyStockChangePer());
-        /*for (var j = 0; j < dna.numOfGenes; j++) {
-            population[i].addBuyRule(population[i].dna.tradeRule.stockChangePer, population[i].dna.tradeRule.perToTrade);
-            population[i].addSellRule(population[i].dna.tradeRule.stockChangePer, population[i].dna.tradeRule.perToTrade);
-            //population[i].addSellRule(Math.floor(Math.random() * 10), Math.floor(Math.random() * 10));
-        }*/
     }
 
     for (inv in population) {
         var rules = population[inv].getBuyRules();
         for (var i = 0; i < rules.length; i++) {
-            console.log("Investor " + inv + "'s buy rule # " + i + ": " + rules[i].pOff + rules[i].pTrade);
+            //console.log("Investor " + inv + "'s buy rule # " + i + ": " + rules[i].pOff + rules[i].pTrade);
         }
     }
     this.checkDecisions = function () {
         for (var i = 0; i <population.length; i++) {
             population[i].sellDecision();
             population[i].buyDecision();
-            //console.log("sharesOwned: " + population[i].sharesOwned);
-            //console.log("Cash: " + population[i].cash);
-            //console.log("Investor " + i + "'s wealth: " + population[i].wealth())
         }
     };
-    this.generationReport = function() {
-        for (var i = 0; i < population.length; i++) {
-            console.log("Investor " + i + "'s sharesOwned: " + population[i].sharesOwned);
-            console.log("Investor " + i + "'s Cash: " + population[i].cash);
-            console.log("Investor " + i + "'s wealth: " + population[i].wealth())
-        }
-        this.selection();
+    this.generationReport = function(g) {
+        population.sort(function(a, b) {
+            return a.wealth() - b.wealth();
+        });
+        //for (var i = 0; i < population.length; i++) {
+            console.log("Generation " + g + " Investor 0's sharesOwned: " + population[0].sharesOwned);
+        var buys = population[0].getBuyRules();
+        var sells = population[0].getSellRules();
+            console.log("Generation " + g + " Investor 0's buyRule: " + buys[0].pOff);
+            console.log("Generation " + g + " Investor 0's sellRule: " + sells[0].pOff);
+            //console.log("Generation " + g + " Investor " + i + "'s Cash: " + population[i].cash);
+            console.log("Generation " + g + " Investor 0's wealth: " + population[0].wealth())
+        //}
     };
 
     var sortPopulation = function () {
@@ -65,14 +63,12 @@ function Population(mutationRate, numOfInvestors) {
             if (population[i].wealth() < population[i].getStartNetWorth()) { //Favor profitable investors
                 n = n * 0.7; //todo this may need a little adjusting.
             }
-            console.log("n: " + n);
             for (var j = 0; j < n; j++) {
                 matingPool.push(population[i]);
             }
         }
-        console.log("mating pool length: " + matingPool.length);
         for (var inv in matingPool) {
-            console.log(matingPool[inv].wealth());
+            //console.log(matingPool[inv].wealth());
         }
     };
 
@@ -87,11 +83,12 @@ function Population(mutationRate, numOfInvestors) {
             //Get their DNA
             var momGenes = mom.getDNA();
             var dadGenes = dad.getDNA();
+
             //Mate the genes
-            var child = momGenes.crossover(dadGenes);
+            var child = momGenes.crossoverDNA(dadGenes);
             //Mutate child genes
             child.mutate(mutationRate);
-            population[i] = new Investor(child)
+            population[i] = new Investor({dna: child})
         }
     };
 

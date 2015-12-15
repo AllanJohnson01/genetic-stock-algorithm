@@ -3,49 +3,63 @@
  */
 function DNA() {
     this.genes = [];
-    this.numOfGenes = 5;
-    //this.DNA = function() {
+    this.numOfGenes = 1;
+    this.firstDNA = function() {
         for (var i = 0; i < this.numOfGenes; i++) {
             this.genes[i] = {
                 buyStockChangePer: function () {
-                    return Math.random() * 10;
+                    return Math.random() * 100;
                 },
                 buyPerToTrade: function () {
-                    return Math.random() * 10;
+                    return 100 //Math.random() * 100;
                 },
                 sellStockChangePer: function () {
-                    return Math.random() * 10;
+                    return Math.random() * 100;
                 },
                 sellPerToTrade: function () {
-                    return Math.random() * 10;
+                    return 100 //Math.random() * 100;
                 }
             };
             //this.genes.push(this.tradeRule);
         }
-    //};
-    this.newDNA = function(newGenes) {
-        this.genes = newGenes;
     };
-    this.crossover = function(partner) {
-        console.log('in crossover');
-        var child = [];
-        var xover = Math.ceil(Math.random()* numOfGenes);
-        for (var i = 0; i < numOfGenes; i++) {
-            if (i > xover) child[i] = genes[i];
-            else           child[i] = partner.genes[i];
+    //this.newDNA = function(newGenes) {
+    //    this.genes = newGenes;
+    //};
+    this.crossoverDNA = function(partner) {
+        var childDNA = [];
+        var xover = Math.ceil(Math.random()* this.numOfGenes);
+        for (var i = 0; i < this.numOfGenes; i++) {
+            if (i > xover) {
+                childDNA[i] = this.genes[i];
+            }
+            else {
+                childDNA[i] = partner.genes[i];
+            }
         }
-        newGenes = new newDNA(child);
-        return newGenes;
+        var child = new DNA();
+        child.genes = childDNA;
+        return child;
     };
     this.mutate = function(m) {
-        console.log('in mutate');
-        for (var i = 0; i < numOfGenes; i++) {
-            if (Math.random()* numOfGenes < m) {
+        for (var i = 0; i < this.numOfGenes; i++) {
+            var r = Math.random();
+            if (r < m) {
                 var mutatedGene = {
-                    stockChangePer: this.stockChangePer = Math.floor(Math.random() * 10),
-                    perToTrade: this.perToTrade = Math.floor(Math.random() * 10)
+                    buyStockChangePer: function () {
+                        return Math.random() * 100;
+                    },
+                    buyPerToTrade: function () {
+                        return Math.random() * 100;
+                    },
+                    sellStockChangePer: function () {
+                        return Math.random() * 100;
+                    },
+                    sellPerToTrade: function () {
+                        return Math.random() * 100;
+                    }
                 };
-                genes[i] = mutatedGene;
+                this.genes[i] = mutatedGene;
             }
         }
     };

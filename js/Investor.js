@@ -30,31 +30,26 @@ function Investor(config) {
     this.buy = function(perToTrade) {
         var subtractDollars = this.cash * (perToTrade / 100);
         var addShares = Math.floor(subtractDollars/stock.price);
+        //console.log("Buying " + addShares + " for " + subtractDollars + " dollars at " + stock.price);
         this.cash -= subtractDollars;
         this.sharesOwned += addShares;
     };
 
     this.sell = function(perToTrade) {
         var subtractShares = Math.ceil(this.sharesOwned * (perToTrade / 100));
+        //console.log("Selling " + subtractShares + " for " + subtractShares * stock.price + " dollars at " + stock.price);
+
         this.cash += subtractShares * stock.price;
         this.sharesOwned -= subtractShares;
     };
     for (var i = 0; i < this.dna.genes.length; i++) {
         buyRules.push(new buyRule(this.dna.genes[i].buyStockChangePer(), this.dna.genes[i].buyPerToTrade()));
-        buyRules.push(new sellRule(this.dna.genes[i].sellStockChangePer(), this.dna.genes[i].sellPerToTrade()));
-        console.log("from Investor push function: " + this.dna.genes[i].buyStockChangePer());
+        sellRules.push(new sellRule(this.dna.genes[i].sellStockChangePer(), this.dna.genes[i].sellPerToTrade()));
     }
-    console.log('Attempt: ' + buyRules[0].pOff);
-    /*this.addBuyRule = function(pOff, pToTrade) {
-        buyRules.push(new buyRule(pOff, pToTrade));
-    };*/
-
-    /*this.addSellRule = function(pOff, pToTrade) {
-        sellRules.push(new sellRule(pOff, pToTrade));
-    };*/
 
     this.sellDecision = function() {
         for (var i = 0; i < sellRules.length; i++) {
+            //console.log("Sell rule " + i + ": " + sellRules[i].pOff + " " + sellRules[i].pTrade);
             if (stock.price - stock.startPrice > sellRules[i].pOff) {
                 this.sell(sellRules[i].pTrade);
             }
@@ -63,6 +58,7 @@ function Investor(config) {
 
     this.buyDecision = function() {
         for (var i = 0; i < buyRules.length; i++) {
+            //console.log("Buy rule " + i + ": " + buyRules[i].pOff + " " + buyRules[i].pTrade);
             if (stock.price - stock.startPrice > buyRules[i].pOff) {
                 this.buy(buyRules[i].pTrade);
             }
@@ -71,11 +67,14 @@ function Investor(config) {
     this.getBuyRules = function () {
         return buyRules;
     };
+    this.getSellRules = function () {
+        return sellRules;
+    };
     this.getStartNetWorth = function() {
         return startNetWorth;
     };
     this.getDNA = function () {
-        return dna;
+        return this.dna;
     }
 }
 module.exports = Investor;

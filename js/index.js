@@ -3,13 +3,16 @@
  */
 var stock = require('./Stock');
 var fRate = 500;
-var testLength = 250;
+var testLength = 200;
 //*** New Price Function Declarations***//
 var time = Math.random()* 100;
 var minY = 0;
 var maxY;
 var Population = require('./Population');
 var pop;
+var generation = 1;
+var numOfInvestors = 200;
+var mutationRate = 0.00;
 
 
 var stockGraph = function(p) {
@@ -17,7 +20,7 @@ var stockGraph = function(p) {
         p.createCanvas(800, 300);
         p.background(220);
         maxY = p.height;
-        pop = new Population(0.02, 40);
+        pop = new Population(mutationRate, numOfInvestors);
     };
 
     p.draw = function () {
@@ -28,9 +31,12 @@ var stockGraph = function(p) {
         pop.checkDecisions();
 
         stock.tradeDay++;
-        if (stock.tradeDay >= testLength) {
-            pop.generationReport();
-            p.noLoop();
+        if (stock.tradeDay % testLength == 0) {
+            pop.generationReport(generation);
+            pop.selection();
+            pop.reproduction();
+            //p.noLoop();
+            generation++;
         }
     };
     p.mouseClicked = function() {
@@ -39,7 +45,7 @@ var stockGraph = function(p) {
 /////////////////////////////////
     var priceChange = function() {
         var n = p.map(p.noise(time),0,1,-1,1);
-        var n2 = p.pow(Math.abs(n), 3.9);
+        var n2 = p.pow(Math.abs(n), 1.9);
         if (n < 0) n2 *= -1;
         var n3 = p.map(n2, -1, 1, minY, maxY);
         var newPrice = n3 - (p.height/2 - stock.priceHistory[0]);
