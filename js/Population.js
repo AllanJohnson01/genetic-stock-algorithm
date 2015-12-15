@@ -35,13 +35,13 @@ function Population(mutationRate, numOfInvestors) {
             return 0;
         });
         //for (var i = 0; i < population.length; i++) {
-            console.log("Generation " + g + " Investor 0's sharesOwned: " + population[0].sharesOwned);
+            console.log("Generation " + g + " Winning Investor's sharesOwned: " + population[0].sharesOwned);
         var buys = population[0].getBuyRules();
         var sells = population[0].getSellRules();
-            console.log("Generation " + g + " Investor 0's buyRule: " + buys[0].pOff);
-            console.log("Generation " + g + " Investor 0's sellRule: " + sells[0].pOff);
+            console.log("Generation " + g + " Winning Investor's buyRule: " + buys[0].pOff);
+            console.log("Generation " + g + " Winning Investor's sellRule: " + sells[0].pOff);
             //console.log("Generation " + g + " Investor " + i + "'s Cash: " + population[i].cash);
-            console.log("Generation " + g + " Investor 0's wealth: " + population[0].wealth())
+            console.log("Generation " + g + " Winning Investor's wealth: " + population[0].wealth())
         //}
     };
 

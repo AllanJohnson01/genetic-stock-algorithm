@@ -11,7 +11,7 @@ var maxY;
 var Population = require('./Population');
 var pop;
 var generation = 1;
-var numOfInvestors = 10;
+var numOfInvestors = 100;
 var mutationRate = 0.01;
 
 var stockGraph = function(p) {

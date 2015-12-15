@@ -11,13 +11,13 @@ function DNA() {
                     return Math.random() * 100;
                 },
                 buyPerToTrade: function () {
-                    return 100; //Math.random() * 100;
+                    return Math.random() * 100;
                 },
                 sellStockChangePer: function () {
                     return Math.random() * 100;
                 },
                 sellPerToTrade: function () {
-                    return 100; //Math.random() * 100;
+                    return Math.random() * 100;
                 }
             };
             //this.genes.push(this.tradeRule);
@@ -47,7 +47,7 @@ function DNA() {
             if (r < m) {
                 var mutatedGene = {
                     buyStockChangePer: function () {
-                        return 100; //Math.random() * 100;
+                        return Math.random() * 100;
                     },
                     buyPerToTrade: function () {
                         return Math.random() * 100;
@@ -56,7 +56,7 @@ function DNA() {
                         return Math.random() * 100;
                     },
                     sellPerToTrade: function () {
-                        return 100; //Math.random() * 100;
+                        return Math.random() * 100;
                     }
                 };
                 this.genes[i] = mutatedGene;
