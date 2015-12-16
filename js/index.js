@@ -3,16 +3,19 @@
  */
 var stock = require('./Stock');
 var fRate = 500;
-var testLength = 200;
+var testLength = 1500;
 //*** New Price Function Declarations***//
 var time = Math.random()* 100;
+var marketTime = Math.random()* 10;
+var marketFluct = 0.02;
+var invMarkSwing = 1.5;
 var minY = 0;
 var maxY;
 var Population = require('./Population');
 var pop;
 var generation = 1;
 var numOfInvestors = 100;
-var mutationRate = 0.01;
+var mutationRate = 0.05;
 
 var stockGraph = function(p) {
     p.setup = function () {
@@ -41,20 +44,27 @@ var stockGraph = function(p) {
     };
 /////////////////////////////////
     var priceChange = function() {
+        var market = marketChg();
         var n = p.map(p.noise(time),0,1,-1,1);
-        var n2 = p.pow(Math.abs(n), 1.9);
+        var n2 = p.pow(Math.abs(n), 3);
         if (n < 0) n2 *= -1;
         var n3 = p.map(n2, -1, 1, minY, maxY);
         var newPrice = n3 - (p.height/2 - stock.priceHistory[0]);
+        var finalPrice = newPrice + market;
         // Moving forward in time
         var dailyPerRate = stock.apr/250;
         minY += dailyPerRate;
         maxY += dailyPerRate;
         time += stock.volatility;
         //console.log("newPrice: " + newPrice);
-        return newPrice;
+        return finalPrice;
     };
-
+    var marketChg = function() {
+        var n = p.map(p.noise(marketTime),0.5 - invMarkSwing,0.5 + invMarkSwing,minY,maxY);
+        n -= stock.startPrice;
+        marketTime += marketFluct;
+        return n;
+    };
 
 //////////////////////////////////
     var drawStockChart = function(yPrice) {
