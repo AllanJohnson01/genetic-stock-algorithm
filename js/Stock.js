@@ -1,7 +1,9 @@
 /**
  * Created by adjohnso on 12/1/2015.
  */
+
 function Stock(config)  {
+
     this.startPrice = config.price | 150;
     this.price  = this.startPrice;
     this.tradeDay = 0;
@@ -16,5 +18,4 @@ function Stock(config)  {
         }
     }
 }
-var stock = new Stock({startPrice: 150});
-module.exports = stock;
+module.exports = new Stock({startPrice: 150});

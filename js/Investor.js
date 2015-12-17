@@ -4,6 +4,7 @@
 var stock = require("./Stock");
 
 function Investor(config) {
+
     var startNetWorth = 50000;
     this.dna = config.dna;
     this.sharesOwned = Math.floor((startNetWorth/2)/stock.startPrice);

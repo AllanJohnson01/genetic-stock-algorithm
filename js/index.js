@@ -2,25 +2,27 @@
  * Created by adjohnso on 12/1/2015.
  */
 var stock = require('./Stock');
-var fRate = 500;
-var testLength = 1500;
-//*** New Price Function Declarations***//
-var time = Math.random()* 100;
-var marketTime = Math.random()* 10;
-var marketFluct = 0.02;
-var invMarkSwing = 1.5;
-var minY = 0;
-var maxY;
-var Population = require('./Population');
-var pop;
-var generation = 1;
-var numOfInvestors = 100;
-var mutationRate = 0.05;
+var histo = require('./Histogram');
 
 var stockGraph = function(p) {
+    var fRate = 500;
+    var testLength = 2500;
+//*** New Price Function Declarations***//
+    var time = Math.random()* 100;
+    var marketTime = Math.random()* 10;
+    var marketFluct = 0.02;
+    var invMarketRng = 100;
+    var minY = 0;
+    var maxY;
+    var Population = require('./Population');
+    var pop;
+    var generation = 1;
+    var numOfInvestors = 100;
+    var mutationRate = 0.01;
+    var gen = [];
     p.setup = function () {
-        p.createCanvas(800, 300);
-        p.background(220);
+        p.createCanvas(1060, 300);
+        p.background(246);
         maxY = p.height;
         pop = new Population(mutationRate, numOfInvestors);
     };
@@ -32,8 +34,10 @@ var stockGraph = function(p) {
         drawStockChart(stock.price);
         pop.checkDecisions();
         stock.tradeDay++;
+        /////////////////////////////////////// End of Generation
         if (stock.tradeDay % testLength == 0) {
             pop.generationReport(generation);
+             var h = histo.setPop(pop);
             pop.selection();
             pop.reproduction();
             generation++;
@@ -46,7 +50,7 @@ var stockGraph = function(p) {
     var priceChange = function() {
         var market = marketChg();
         var n = p.map(p.noise(time),0,1,-1,1);
-        var n2 = p.pow(Math.abs(n), 3);
+        var n2 = p.pow(Math.abs(n), 2.9);
         if (n < 0) n2 *= -1;
         var n3 = p.map(n2, -1, 1, minY, maxY);
         var newPrice = n3 - (p.height/2 - stock.priceHistory[0]);
@@ -60,7 +64,7 @@ var stockGraph = function(p) {
         return finalPrice;
     };
     var marketChg = function() {
-        var n = p.map(p.noise(marketTime),0.5 - invMarkSwing,0.5 + invMarkSwing,minY,maxY);
+        var n = p.map(p.noise(marketTime), 0.5 - invMarketRng,0.5 + invMarketRng, 0, p.height);
         n -= stock.startPrice;
         marketTime += marketFluct;
         return n;
@@ -100,6 +104,12 @@ var stockGraph = function(p) {
         drawTickMarks();
         p.pop();
     };
+    var getGen = function () {
+        return gen;
+    }
 };
 new p5(stockGraph);
+require('./Histogram');
+
+
 
