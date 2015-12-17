@@ -2,11 +2,11 @@
  * Created by adjohnso on 12/1/2015.
  */
 var stock = require('./Stock');
-var histo = require('./Histogram');
+var histo = require('./histogram');
 
 var stockGraph = function(p) {
     var fRate = 500;
-    var testLength = 2500;
+    var testLength = 250;
 //*** New Price Function Declarations***//
     var time = Math.random()* 100;
     var marketTime = Math.random()* 10;
@@ -109,7 +109,7 @@ var stockGraph = function(p) {
     }
 };
 new p5(stockGraph);
-require('./Histogram');
+require('./histogram');
 
 
 

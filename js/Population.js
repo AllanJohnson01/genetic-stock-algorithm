@@ -64,7 +64,7 @@ function Population(mutationRate, numOfInvestors) {
         var maxFitness = population[0].wealth(); //get max fitness
         for (var i = 0; i < population.length; i++) {
             var fitness = population[i].wealth()/maxFitness;
-            var fitnessNormal = Math.pow(Math.abs(fitness), 5); //Todo this may need adjusting.
+            var fitnessNormal = Math.pow(Math.abs(fitness), 2); //Todo this may need adjusting.
             var n = fitnessNormal * 100;
             if (population[i].wealth() < population[i].getStartNetWorth()) { //Favor profitable investors
                 n = n * 0.7; //todo this may need a little adjusting.
