@@ -6,25 +6,33 @@ var histo = require('./histogram');
 
 var stockGraph = function(p) {
     var fRate = 60;
-    var testLength = 1000;
+    var testLength = 250;
 //*** New Price Function Declarations***//
     var time = Math.random()* 100;
     var marketTime = Math.random()* 10;
     var marketFluct = 0.02;
-    var invMarketRng = 100;
+    var invMarketRng = 5; // make this a high number to flatten the market.
     var minY = 0;
     var maxY;
+    var mapY = 0;
     var Population = require('./Population');
     var pop;
     var generation = 1;
-    var numOfInvestors = 20;
-    var mutationRate = 0.03;
+    var numOfInvestors = 25;
+    var mutationRate = 0.00;
     var gen = [];
     var run = true;
+    var SMAs = [];
     p.setup = function () {
         p.createCanvas(1065, 300);
         p.background(246);
         maxY = p.height;
+        mapY = maxY;
+        SMAs.push(new SMA(p.height/2, stock, 10, "red"));
+        SMAs.push(new SMA(p.height/2, stock, 25, "LightGreen"));
+        SMAs.push(new SMA(p.height/2,stock, 50, "lime"));
+        SMAs.push(new SMA(p.height/2,stock, 100, "Green"));
+        SMAs.push(new SMA(p.height/2,stock, 100, "DarkGreen"));
         pop = new Population(mutationRate, numOfInvestors);
     };
 
@@ -33,6 +41,7 @@ var stockGraph = function(p) {
         p.frameRate(fRate);
         stock.price = priceChange();
         drawStockChart(stock.price);
+        for (s in SMAs) SMAs[s].draw();
         pop.checkDecisions();
         stock.tradeDay++;
         /////////////////////////////////////// End of Generation
@@ -61,7 +70,7 @@ var stockGraph = function(p) {
         var n = p.map(p.noise(time),0,1,-1,1);
         var n2 = p.pow(Math.abs(n), 2.5);
         if (n < 0) n2 *= -1;
-        var n3 = p.map(n2, -1.5, 1.5, minY, maxY);
+        var n3 = p.map(n2, -1.5, 1.5, 0, mapY);
         var newPrice = n3 - (p.height/2 - stock.priceHistory[0]);
         var finalPrice = newPrice + market;
         // Moving forward in time
@@ -69,6 +78,7 @@ var stockGraph = function(p) {
         stock.neutralPrice += dailyPerRate;
         minY += dailyPerRate;
         maxY += dailyPerRate;
+        mapY += dailyPerRate * 2;
         time += stock.volatility;
         //console.log("newPrice: " + newPrice);
         return finalPrice;
@@ -79,11 +89,35 @@ var stockGraph = function(p) {
         marketTime += marketFluct;
         return n;
     };
+    /////////////////////////////////
+    var SMA = function(lastPoint, stock, periods, color) {
+        this.lastPoint = lastPoint;
+        this.stock = stock;
+        this.periods = periods;
+        this.color = color;
+    };
+    SMA.prototype.draw = function() {
+        p.push();
+        p.translate(0, maxY);
+        var drawingArea = p.width -65;
+        var repeat = stock.tradeDay % drawingArea;
+        p.stroke(this.color);
+        p.strokeWeight(0.5);
+        var newSMA = stock.SMA(this.periods);
+        p.line(repeat -1, -this.lastPoint, repeat, -newSMA);
+        this.lastPoint = newSMA;
+        p.pop();
+    };
 
 //////////////////////////////////
     var drawStockChart = function(yPrice) {
         var drawingArea = p.width -65;
         var repeat = stock.tradeDay % drawingArea;
+        p.noStroke();
+        p.fill(248);
+        p.rect(0,0, 200, 50);
+        p.fill(0);
+        p.text("Generation: " + generation, 15, 30);
         p.push();
         p.translate(0,maxY);
         p.noStroke();
@@ -114,9 +148,6 @@ var stockGraph = function(p) {
         drawTickMarks();
         p.pop();
     };
-    var getGen = function () {
-        return gen;
-    }
 };
 new p5(stockGraph);
 require('./histogram');

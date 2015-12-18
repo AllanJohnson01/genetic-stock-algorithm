@@ -2,26 +2,36 @@
  * Created by adjohnso on 12/16/2015.
  */
 require("p5");
-var pop, winners, numOfGenes;
-var lookback = 5;
+var popu, winners, numOfGenes;
+var lookback = 3;
+var recordW = 0;
+var avgW = 0;
 exports.setPop = function(pop) {
-    pop = pop;
+    popu = pop;
     winners = pop.getWinners();
     var n = winners[0].getBuyRules();
     numOfGenes = n.length;
     sortWinners();
-    for (win in winners) {
-        console.log("wealth " + winners[win].wealth());
+    var wSum = 0;
+    for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
+        wSum += winners[i-1].wealth();
     }
-        var wSum = 0;
-        for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
-            wSum += winners[i-1].wealth();
-        }
-        if (winners.length > lookback) {
-            console.log("Average Winners Wealth: " + wSum / lookback);
-        } else {
-            console.log("Average Winners Wealth: " + wSum / winners.length);
-        }
+    if (winners.length > lookback) {
+        console.log("Average Winners Wealth: " + wSum / lookback);
+    } else {
+        console.log("Average Winners Wealth: " + wSum / winners.length);
+    }
+    popAvgW();
+    calcRecordW();
+};
+var popAvgW = function () {
+    var pop = popu.getPopulation();
+    var allWealth = [];
+    var sum = 0;
+    for (inv in pop) {
+        sum += pop[inv].wealth();
+    }
+    avgW = Math.round(sum/pop.length * 100)/100;
 };
 
 var sortWinners = function () {
@@ -31,31 +41,38 @@ var sortWinners = function () {
         return 0;
     });
 };
+var calcRecordW = function() {
+    if (winners[winners.length -1].wealth() > recordW) {
+        recordW = Math.round(winners[winners.length -1].wealth()*100)/100;
+    }
+};
 
 function Histogram(p) {
-
-    var buyAvgs = [];
-    var sellAvgs = [];
     var colwidth = 0;
     p.setup = function() {
-        p.createCanvas(420, 300);
+        p.createCanvas(1005, 150);
+        p.noStroke();
     };
     p.draw = function() {
         p.background(245);
-        p.stroke(200);
+
         colwidth = p.width/numOfGenes;
+        p.textAlign(p.LEFT);
+        p.fill(50, 200, 50);
         p.text("Buy Rules", 15, 30);
-        p.text("Sell Rules", 15, p.height/2 + 30);
+        p.fill(200, 15, 15);
+        p.text("Sell Rules", 100, 30);
+        p.textAlign(p.RIGHT);
+        p.text("Record NetWorth: $" + recordW, p.width - 15, 20);
+        p.text("Gen's Avg NetWorth: $" + avgW, p.width - 15, 40);
 
         for (var i = 0; i < numOfGenes; i++) {
-            p.fill(220, 200, 90);
-            p.rect(i * colwidth, p.height/2, colwidth, -buyAvg(i));
-            p.fill(100, 200, 250);
-            p.rect(i * colwidth, p.height, colwidth, -sellAvg(i));
+            p.fill(50, 200, 50);
+            p.rect(i * colwidth, p.height, colwidth/2, -buyAvg(i)*2);
+            p.fill(200, 15, 15);
+            p.rect(i * colwidth + colwidth/2 , p.height, colwidth/2, -sellAvg(i)*2);
         }
-
         p.line(0, p.height - 100, p.width, p.height - 100);
-        p.line(0, p.height/2 - 100, p.width, p.height/2 - 100);
     };
 
 

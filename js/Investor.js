@@ -4,7 +4,6 @@
 var stock = require("./Stock");
 
 function Investor(config) {
-
     var startNetWorth = 50000;
     this.dna = config.dna;
     this.sharesOwned = Math.floor((startNetWorth/2)/stock.neutralPrice);
@@ -12,11 +11,39 @@ function Investor(config) {
     this.wealth = function () {
         return this.cash + (this.sharesOwned * stock.price);
     };
-    this.gain = function() {
-        return (this.wealth - startNetWorth) / startNetWorth;
+    this.gain = function(wealth) {
+        return (wealth - startNetWorth) / startNetWorth;
     };
     var sellRules = [];
     var buyRules = [];
+    this.histPerform = [];
+    this.dayPerform = function () {
+        this.histPerform.push(this.wealth());
+    };
+    this.avgFitness = function() { //This func returns the avg daily gain for the investor  - 5% of the outliers on both ends
+        var gains = [];
+        var sum = 0;
+        var testPeriod = 10;
+        for (var i = testPeriod; i < this.histPerform.length; i++) {//take a period of time - calculate gain for that period
+                if(this.histPerform[i] - this.histPerform[i - testPeriod] != 0) {
+                    gains[i] = this.histPerform[i] - this.histPerform[i - testPeriod];
+                }
+        }
+        gains.sort(function (a, b) {
+            return a-b;
+        }); //sort
+        var half = Math.floor(gains.length/2);
+        for (var i in gains) {
+            if (i > gains.length * 0.05 && i < gains.length * 0.95) {
+                sum += gains[i];
+            }
+        }
+        var avg = sum / gains.length;
+        var median = gains[half];
+        //console.log("Median Gain: " + gains[half]);
+        //console.log("Avg: " + avg);
+        return median;//find the median gain
+    };
     var buyRule = function(pOff, pTrade) {
         this.pOff = pOff;
         this.pTrade = pTrade;

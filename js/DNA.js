@@ -4,13 +4,13 @@
 function DNA() {
     this.genes = [];
     this.numOfGenes = 100;
-    this.firstDNA = function() {
+    this.firstDNA = function(mult) {
         for (var i = 0; i < this.numOfGenes; i++) {
             this.genes[i] = {
-                buyStockChangePer:  i/2,
-                buyPerToTrade:      (Math.random() * 100),
-                sellStockChangePer: i/2,
-                sellPerToTrade:     (Math.random() * 100)
+                buyStockChangePer:  i/4,
+                buyPerToTrade:      mult,//(Math.random() * 100),
+                sellStockChangePer: i/4,
+                sellPerToTrade:     mult //(Math.random() * 100)
             };
         }
     };
@@ -26,14 +26,20 @@ function DNA() {
         child.genes = childGenes;
         return child;
     };
-    this.smallAlteration = function () {
+    this.posAlter = function () {
+        //var r1 Math.random()*2;
+        //r2 = Math.random()*2;
         for (var j = 0; j < this.genes.length; j++) {
-            var r = Math.random()*2;
-            if (r < 1) {r = -1} else { r = 1}
-            this.genes[j].buyPerToTrade += (Math.random()) * r;
-            r = Math.random()*2;
-            if (r < 1) {r = -1} else { r = 1}
-            this.genes[j].sellPerToTrade += (Math.random()) * r;
+            this.genes[j].buyPerToTrade += 1;
+            this.genes[j].sellPerToTrade += -1;
+        }
+    };
+    this.negAlter = function () {
+        //var r1 Math.random()*2;
+        //r2 = Math.random()*2;
+        for (var j = 0; j < this.genes.length; j++) {
+            this.genes[j].buyPerToTrade += -1;
+            this.genes[j].sellPerToTrade += 1;
         }
     };
     this.mutate = function(m) {
@@ -41,9 +47,9 @@ function DNA() {
             var r = Math.random();
             if (r < m) {
                 this.genes[i] = {
-                    buyStockChangePer:  i/2,
+                    buyStockChangePer:  i/4,
                     buyPerToTrade:      (Math.random() * 100),
-                    sellStockChangePer: i/2,
+                    sellStockChangePer: i/4,
                     sellPerToTrade:     (Math.random() * 100)
                 };
             }
