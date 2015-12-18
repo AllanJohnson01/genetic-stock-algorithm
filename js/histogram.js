@@ -3,13 +3,25 @@
  */
 require("p5");
 var pop, winners, numOfGenes;
-
+var lookback = 5;
 exports.setPop = function(pop) {
     pop = pop;
     winners = pop.getWinners();
     var n = winners[0].getBuyRules();
     numOfGenes = n.length;
     sortWinners();
+    for (win in winners) {
+        console.log("wealth " + winners[win].wealth());
+    }
+        var wSum = 0;
+        for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
+            wSum += winners[i-1].wealth();
+        }
+        if (winners.length > lookback) {
+            console.log("Average Winners Wealth: " + wSum / lookback);
+        } else {
+            console.log("Average Winners Wealth: " + wSum / winners.length);
+        }
 };
 
 var sortWinners = function () {
@@ -21,30 +33,38 @@ var sortWinners = function () {
 };
 
 function Histogram(p) {
-    var lookback = 10;
+
     var buyAvgs = [];
     var sellAvgs = [];
-
+    var colwidth = 0;
     p.setup = function() {
         p.createCanvas(420, 300);
     };
     p.draw = function() {
         p.background(245);
         p.stroke(200);
+        colwidth = p.width/numOfGenes;
+        p.text("Buy Rules", 15, 30);
+        p.text("Sell Rules", 15, p.height/2 + 30);
 
         for (var i = 0; i < numOfGenes; i++) {
             p.fill(220, 200, 90);
-            p.rect(i * 4, p.height/2, 4, -buyAvg(i));
+            p.rect(i * colwidth, p.height/2, colwidth, -buyAvg(i));
             p.fill(100, 200, 250);
-            p.rect(i * 4, p.height, 4, -sellAvg(i));
+            p.rect(i * colwidth, p.height, colwidth, -sellAvg(i));
         }
+
+        p.line(0, p.height - 100, p.width, p.height - 100);
+        p.line(0, p.height/2 - 100, p.width, p.height/2 - 100);
     };
 
 
     var buyAvg = function(ruleNum) {
         var sum = 0;
-        for (var i = winners.length - 1; i > winners.length - lookback && i >= 0; i--) {
-            var r = winners[i].getBuyRules();
+        //var wSum = 0;
+        for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
+            //wSum += winners[i].wealth()
+            var r = winners[i-1].getBuyRules();
             sum += r[ruleNum].pTrade;
         }
         if (winners.length > lookback) {
@@ -55,8 +75,8 @@ function Histogram(p) {
     };
     var sellAvg = function(ruleNum) {
         var sum = 0;
-        for (var i = winners.length - 1; i > winners.length - lookback && i >= 0; i--) {
-            var r = winners[i].getSellRules();
+        for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
+            var r = winners[i-1].getSellRules();
             sum += r[ruleNum].pTrade;
         }
         if (winners.length > lookback) {

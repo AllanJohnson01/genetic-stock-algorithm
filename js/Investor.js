@@ -7,7 +7,7 @@ function Investor(config) {
 
     var startNetWorth = 50000;
     this.dna = config.dna;
-    this.sharesOwned = Math.floor((startNetWorth/2)/stock.startPrice);
+    this.sharesOwned = Math.floor((startNetWorth/2)/stock.neutralPrice);
     this.cash = startNetWorth - (this.sharesOwned * stock.price);
     this.wealth = function () {
         return this.cash + (this.sharesOwned * stock.price);
@@ -49,16 +49,16 @@ function Investor(config) {
     }
 
     this.sellDecision = function() {
-        for (var i = 0; i < sellRules.length; i++) {
-            if (((stock.price - stock.startPrice)/stock.startPrice) > (sellRules[i].pOff/100)) {
+        for (var i = 0; i < sellRules.length - 1; i++) {
+            if (((stock.price - stock.neutralPrice)/stock.neutralPrice) > (sellRules[i].pOff/100) && ((stock.price - stock.neutralPrice)/stock.neutralPrice) <= (sellRules[i+1].pOff/100)) {
                 this.sell(sellRules[i].pTrade);
             }
         }
     };
 
     this.buyDecision = function() {
-        for (var i = 0; i < buyRules.length; i++) {
-            if (((stock.price - stock.startPrice)/stock.startPrice) < -(buyRules[i].pOff/100)) {
+        for (var i = 0; i < buyRules.length - 1; i++) {
+            if (((stock.price - stock.neutralPrice)/stock.neutralPrice) < -(buyRules[i].pOff/100) && ((stock.price - stock.neutralPrice)/stock.neutralPrice) >= -(buyRules[i+1].pOff/100)) {
                 this.buy(buyRules[i].pTrade);
             }
         }

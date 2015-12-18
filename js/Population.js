@@ -37,15 +37,15 @@ function Population(mutationRate, numOfInvestors) {
         });
         histWinners.push(population[0]);
         //for (var i = 0; i < population.length; i++) {
-            console.log("Gen " + g + " Winning Investor's sharesOwned: " + population[0].sharesOwned);
+            //console.log("Gen " + g + " Winning Investor's sharesOwned: " + population[0].sharesOwned);
         var buys = population[0].getBuyRules();
         var sells = population[0].getSellRules();
-        for (var h = 0; h < buys.length; h++) {
-            console.log("Gen " + g + " Change %                        " + buys[h].pOff);
-            console.log("Gen " + g + " Winning Investor's buy %:       " + buys[h].pTrade);
-            console.log("Gen " + g + " Winning Investor's sell %:      " + sells[h].pTrade);
+        for (var h = 0; h < 2; h++) {
+            console.log("Gen " + g + " Change %                                    " + buys[h].pOff);
+            console.log("Gen " + g + " Winning Investor's buy rule " + h + " %:    " + buys[h].pTrade);
+            console.log("Gen " + g + " Winning Investor's sell rule " + h + "  %:  " + sells[h].pTrade);
         }
-            console.log("Gen " + g + " Winning Investor's wealth:      " + population[0].wealth());
+            //console.log("Gen " + g + " Winning Investor's wealth:      " + population[0].wealth());
         //}
     };
 
@@ -64,7 +64,7 @@ function Population(mutationRate, numOfInvestors) {
         var maxFitness = population[0].wealth(); //get max fitness
         for (var i = 0; i < population.length; i++) {
             var fitness = population[i].wealth()/maxFitness;
-            var fitnessNormal = Math.pow(Math.abs(fitness), 2); //Todo this may need adjusting.
+            var fitnessNormal = Math.pow(Math.abs(fitness), 3); //Todo this may need adjusting.
             var n = fitnessNormal * 100;
             if (population[i].wealth() < population[i].getStartNetWorth()) { //Favor profitable investors
                 n = n * 0.7; //todo this may need a little adjusting.
@@ -73,8 +73,10 @@ function Population(mutationRate, numOfInvestors) {
                 matingPool.push(population[i]);
             }
         }
-        for (var inv in matingPool) {
-        }
+        /*for (var inv in matingPool) {
+            var buyR = matingPool[inv].getBuyRules();
+            console.log("Invsetor's first buy rule count in pool: " + buyR[0].pTrade);
+        }*/
     };
 
     this.reproduction = function() { //This repo function doesn't just mate, it keeps the best from the previous gen and copies of them that are slightly modified
@@ -86,6 +88,17 @@ function Population(mutationRate, numOfInvestors) {
                 modCloneDNA.smallAlteration();
                 population[i+1] = new Investor({dna: modCloneDNA}); //Add a second investor with modified genes of the clone
                 i++;
+            } else if (i < population.length/2 + 1) {
+                var di = new DNA();
+                di.firstDNA();
+                //console.log(d.genes.length);
+                for (g in di.genes) {
+
+                    di.genes[g].buyPerToTrade = 50;
+
+                    di.genes[g].sellPerToTrade = 50;
+                }
+                population[i] = new Investor({dna: di});
             } else {
                 //Spin the wheel
                 var m = Math.floor(Math.random() * matingPool.length);
@@ -99,10 +112,12 @@ function Population(mutationRate, numOfInvestors) {
                 //Mate the genes
                 var child = momGenes.crossoverDNA(dadGenes);
                 child.mutate(mutationRate);
-                population[i] = new Investor({dna: child})}
-
-
+                population[i] = new Investor({dna: child})
+            }
         }
+        //console.log("Investor 0's SharesOwned: " + population[0].sharesOwned);
+        //console.log("Investor 0's cash: " + population[0].cash);
+        //console.log("Investor 0's netWorth: " + population[0].wealth());
     };
     this.getWinners = function() {
         return histWinners;

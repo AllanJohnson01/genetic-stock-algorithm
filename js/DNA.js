@@ -7,9 +7,9 @@ function DNA() {
     this.firstDNA = function() {
         for (var i = 0; i < this.numOfGenes; i++) {
             this.genes[i] = {
-                buyStockChangePer:  i,
+                buyStockChangePer:  i/2,
                 buyPerToTrade:      (Math.random() * 100),
-                sellStockChangePer: i,
+                sellStockChangePer: i/2,
                 sellPerToTrade:     (Math.random() * 100)
             };
         }
@@ -41,9 +41,9 @@ function DNA() {
             var r = Math.random();
             if (r < m) {
                 this.genes[i] = {
-                    buyStockChangePer:  i,
+                    buyStockChangePer:  i/2,
                     buyPerToTrade:      (Math.random() * 100),
-                    sellStockChangePer: i,
+                    sellStockChangePer: i/2,
                     sellPerToTrade:     (Math.random() * 100)
                 };
             }

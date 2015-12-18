@@ -5,8 +5,8 @@ var stock = require('./Stock');
 var histo = require('./histogram');
 
 var stockGraph = function(p) {
-    var fRate = 500;
-    var testLength = 250;
+    var fRate = 60;
+    var testLength = 1000;
 //*** New Price Function Declarations***//
     var time = Math.random()* 100;
     var marketTime = Math.random()* 10;
@@ -17,11 +17,12 @@ var stockGraph = function(p) {
     var Population = require('./Population');
     var pop;
     var generation = 1;
-    var numOfInvestors = 100;
-    var mutationRate = 0.01;
+    var numOfInvestors = 20;
+    var mutationRate = 0.03;
     var gen = [];
+    var run = true;
     p.setup = function () {
-        p.createCanvas(1060, 300);
+        p.createCanvas(1065, 300);
         p.background(246);
         maxY = p.height;
         pop = new Population(mutationRate, numOfInvestors);
@@ -37,26 +38,35 @@ var stockGraph = function(p) {
         /////////////////////////////////////// End of Generation
         if (stock.tradeDay % testLength == 0) {
             pop.generationReport(generation);
-             var h = histo.setPop(pop);
+            histo.setPop(pop);
             pop.selection();
             pop.reproduction();
             generation++;
         }
     };
     p.mouseClicked = function() {
-        p.noLoop();
+        if (run) {
+            run = false;
+            p.noLoop();
+        } else {
+            run = true;
+            p.loop();
+        }
     };
 /////////////////////////////////
-    var priceChange = function() {
+    var priceChange = function() { /*Todo. This function needs 2 adjustments.
+                                     1. change the map to keep the percentage of gain/loss proportionate to the current price of the stock.
+                                     2. adjust the scaling of the window to match item #1.*/
         var market = marketChg();
         var n = p.map(p.noise(time),0,1,-1,1);
-        var n2 = p.pow(Math.abs(n), 2.9);
+        var n2 = p.pow(Math.abs(n), 2.5);
         if (n < 0) n2 *= -1;
-        var n3 = p.map(n2, -1, 1, minY, maxY);
+        var n3 = p.map(n2, -1.5, 1.5, minY, maxY);
         var newPrice = n3 - (p.height/2 - stock.priceHistory[0]);
         var finalPrice = newPrice + market;
         // Moving forward in time
         var dailyPerRate = stock.apr/250;
+        stock.neutralPrice += dailyPerRate;
         minY += dailyPerRate;
         maxY += dailyPerRate;
         time += stock.volatility;
