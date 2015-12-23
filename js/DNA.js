@@ -48,9 +48,9 @@ function DNA() {
             if (r < m) {
                 this.genes[i] = {
                     buyStockChangePer:  i/4,
-                    buyPerToTrade:      (Math.random() * 100),
+                    buyPerToTrade:      this.genes[i].buyPerToTrade += ((Math.random() * 10) -5),
                     sellStockChangePer: i/4,
-                    sellPerToTrade:     (Math.random() * 100)
+                    sellPerToTrade:     this.genes[i].sellPerToTrade += ((Math.random() * 10) -5)
                 };
             }
         }

@@ -6,7 +6,7 @@ var stock = require("./Stock");
 function Investor(config) {
     var startNetWorth = 50000;
     this.dna = config.dna;
-    this.sharesOwned = Math.floor((startNetWorth/2)/stock.neutralPrice);
+    this.sharesOwned = 0; //Math.floor((startNetWorth/2)/stock.neutralPrice);
     this.cash = startNetWorth - (this.sharesOwned * stock.price);
     this.wealth = function () {
         return this.cash + (this.sharesOwned * stock.price);
@@ -14,6 +14,7 @@ function Investor(config) {
     this.gain = function(wealth) {
         return (wealth - startNetWorth) / startNetWorth;
     };
+    this.finishWealth = 0;
     var sellRules = [];
     var buyRules = [];
     this.histPerform = [];
@@ -75,20 +76,30 @@ function Investor(config) {
         sellRules.push(new sellRule(this.dna.genes[i].sellStockChangePer, this.dna.genes[i].sellPerToTrade));
     }
 
-    this.sellDecision = function() {
+    this.sellDecision = function(wAvg) {
         for (var i = 0; i < sellRules.length - 1; i++) {
-            if (((stock.price - stock.neutralPrice)/stock.neutralPrice) > (sellRules[i].pOff/100) && ((stock.price - stock.neutralPrice)/stock.neutralPrice) <= (sellRules[i+1].pOff/100)) {
+            if (((stock.price - wAvg)/wAvg) > (sellRules[i].pOff/100) && ((stock.price - wAvg)/wAvg) <= (sellRules[i+1].pOff/100)) {
                 this.sell(sellRules[i].pTrade);
             }
         }
+        //if (stock.price > stock.weightedSMA(200)){
+        //    console.log("sell");
+        //    this.sell(20);
+        //}
     };
 
-    this.buyDecision = function() {
+    this.buyDecision = function(wAvg) {
         for (var i = 0; i < buyRules.length - 1; i++) {
-            if (((stock.price - stock.neutralPrice)/stock.neutralPrice) < -(buyRules[i].pOff/100) && ((stock.price - stock.neutralPrice)/stock.neutralPrice) >= -(buyRules[i+1].pOff/100)) {
+            if (((stock.price - wAvg)/wAvg) < -(buyRules[i].pOff/100) && ((stock.price - wAvg)/wAvg) >= -(buyRules[i+1].pOff/100)) {
                 this.buy(buyRules[i].pTrade);
             }
         }
+        //console.log("WSMA: " + stock.weightedSMA(200));
+        //console.log("price: " + stock.price);
+        //if (stock.price < stock.weightedSMA(200)) {
+        //    console.log("buy");
+        //    this.buy(20);
+        //}
     };
     this.getBuyRules = function () {
         return buyRules;

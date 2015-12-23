@@ -8,10 +8,10 @@ var stockGraph = function(p) {
     var fRate = 60;
     var testLength = 250;
 //*** New Price Function Declarations***//
-    var time = Math.random()* 100;
-    var marketTime = Math.random()* 10;
-    var marketFluct = 0.02;
-    var invMarketRng = 5; // make this a high number to flatten the market.
+    var time = 0; //Math.random()* 100;
+    var marketTime = 0; //Math.random()* 10;
+    var marketFluct = 0.01;
+    var invMarketRng = 2; // make this a high number to flatten the market.
     var minY = 0;
     var maxY;
     var mapY = 0;
@@ -19,10 +19,12 @@ var stockGraph = function(p) {
     var pop;
     var generation = 1;
     var numOfInvestors = 25;
-    var mutationRate = 0.00;
+    var mutationRate = 0.1;
     var gen = [];
     var run = true;
     var SMAs = [];
+    var lastSMAAvg = 0;
+    var lastSMAAvg2 = 0;
     p.setup = function () {
         p.createCanvas(1065, 300);
         p.background(246);
@@ -34,6 +36,8 @@ var stockGraph = function(p) {
         SMAs.push(new SMA(p.height/2,stock, 100, "Green"));
         SMAs.push(new SMA(p.height/2,stock, 100, "DarkGreen"));
         pop = new Population(mutationRate, numOfInvestors);
+        lastSMAAvg = p.height/2;
+        lastSMAAvg2 = p.height/2;
     };
 
     p.draw = function () {
@@ -42,6 +46,8 @@ var stockGraph = function(p) {
         stock.price = priceChange();
         drawStockChart(stock.price);
         for (s in SMAs) SMAs[s].draw();
+        drawAllAvgs(100);
+        drawWeightedAvgs(100);
         pop.checkDecisions();
         stock.tradeDay++;
         /////////////////////////////////////// End of Generation
@@ -106,6 +112,46 @@ var stockGraph = function(p) {
         var newSMA = stock.SMA(this.periods);
         p.line(repeat -1, -this.lastPoint, repeat, -newSMA);
         this.lastPoint = newSMA;
+        p.pop();
+    };
+
+    var drawAllAvgs = function (longest) {
+        p.push();
+        p.translate(0, maxY);
+
+        var drawingArea = p.width -65;
+        var repeat = stock.tradeDay % drawingArea;
+        var sum = 0;
+        if (longest > stock.tradeDay) longest = stock.tradeDay;
+        for (var i = 1; i <= longest; i++) {
+            sum += stock.SMA(i);
+        }
+        //console.log("Sum: " + sum + "\nlongest: " + longest);
+        var avgSMA = sum / longest;
+        p.stroke(0,0,255);
+        p.strokeWeight(2);
+        p.line(repeat -1, -lastSMAAvg, repeat, -avgSMA);
+        lastSMAAvg = avgSMA;
+        p.pop();
+    };
+    var drawWeightedAvgs = function (longest) {
+        p.push();
+        p.translate(0, maxY);
+
+        var drawingArea = p.width -65;
+        var repeat = stock.tradeDay % drawingArea;
+        var sum = 0;
+        var num = 0;
+        if (longest > stock.tradeDay) longest = stock.tradeDay;
+        for (var i = 1; i <= longest; i *= 2) {
+            sum += stock.SMA(i);
+            num++;
+        }
+        var avgSMA = sum / num;
+        p.stroke(255,0,0);
+        p.strokeWeight(2);
+        p.line(repeat -1, -lastSMAAvg2, repeat, -avgSMA);
+        lastSMAAvg2 = avgSMA;
         p.pop();
     };
 

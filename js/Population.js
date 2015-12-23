@@ -3,6 +3,7 @@
  */
 var Investor = require('./Investor');
 var DNA = require('./DNA');
+var stock = require('./Stock');
 
 function Population(mutationRate, numOfInvestors) {
     this.numOfInvestors = numOfInvestors;
@@ -24,9 +25,10 @@ function Population(mutationRate, numOfInvestors) {
         }
     }
     this.checkDecisions = function () {
+        var smaAvg = stock.weightedSMA(100);
         for (var i = 0; i <population.length; i++) {
-            population[i].sellDecision();
-            population[i].buyDecision();
+            population[i].sellDecision(smaAvg);
+            population[i].buyDecision(smaAvg);
             population[i].dayPerform();
         }
     };
@@ -36,14 +38,17 @@ function Population(mutationRate, numOfInvestors) {
             if (a.wealth() > b.wealth()) return -1;
             return 0;
         });
+        for (inv in population) {
+            population[inv].finishWealth = population[inv].wealth();
+        }
         histWinners.push(population[0]);
         var buys = population[0].getBuyRules();
         var sells = population[0].getSellRules();
-        for (var h = 0; h < 2; h++) {
+        /*for (var h = 0; h < 2; h++) {
             console.log("Gen " + g + " Change %                                    " + buys[h].pOff);
             console.log("Gen " + g + " Winning Investor's buy rule " + h + " %:    " + buys[h].pTrade);
             console.log("Gen " + g + " Winning Investor's sell rule " + h + "  %:  " + sells[h].pTrade);
-        }
+        }*/
     };
 
     var sortPopulation = function () {
@@ -71,7 +76,7 @@ function Population(mutationRate, numOfInvestors) {
             var fitnessNormal = Math.pow(Math.abs(fitness), 3); //Todo this may need adjusting.
             var n = fitnessNormal * 100;
             //console.log("n: " + n);
-            if (population[i].wealth() < population[i].getStartNetWorth()) { //Favor profitable investors
+            if (population[i].finishWealth < population[i].getStartNetWorth()) { //Favor profitable investors
              n = n * 0.5; //todo this may need a little adjusting.
              }
             for (var j = 0; j < n; j++) {
@@ -86,7 +91,11 @@ function Population(mutationRate, numOfInvestors) {
 
     this.reproduction = function() { //This repo function doesn't just mate, it keeps the best from the previous gen and copies of them that are slightly modified
         for (var i = 0; i < population.length * 2 / 3; i++) {
-            if (i < population.length) { //pick the top producing from previous generation. the investors should still be in order from the selection function
+
+            if (i < 1) {
+                var recordDNA = histWinners[0]
+                population[i] =
+            } else if (i < population.length/2) { //pick the top producing from previous generation. the investors should still be in order from the selection function
                 var cloneDNA = population[i].getDNA();
                 population[i] = new Investor({dna: cloneDNA});
                 modCloneDNA1 = population[i].getDNA();

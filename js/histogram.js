@@ -3,7 +3,7 @@
  */
 require("p5");
 var popu, winners, numOfGenes;
-var lookback = 3;
+var lookBack = 3;
 var recordW = 0;
 var avgW = 0;
 exports.setPop = function(pop) {
@@ -12,12 +12,13 @@ exports.setPop = function(pop) {
     var n = winners[0].getBuyRules();
     numOfGenes = n.length;
     sortWinners();
+    //for (i in winners)console.log(winners[i].finishWealth);
     var wSum = 0;
-    for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
-        wSum += winners[i-1].wealth();
+    for (var i = winners.length; i > winners.length - lookBack && i > 0; i--) {
+        wSum += winners[i-1].finishWealth;
     }
-    if (winners.length > lookback) {
-        console.log("Average Winners Wealth: " + wSum / lookback);
+    if (winners.length > lookBack) {
+        console.log("Average Winners Wealth: " + wSum / lookBack);
     } else {
         console.log("Average Winners Wealth: " + wSum / winners.length);
     }
@@ -26,24 +27,23 @@ exports.setPop = function(pop) {
 };
 var popAvgW = function () {
     var pop = popu.getPopulation();
-    var allWealth = [];
     var sum = 0;
     for (inv in pop) {
-        sum += pop[inv].wealth();
+        sum += pop[inv].finishWealth;
     }
     avgW = Math.round(sum/pop.length * 100)/100;
 };
 
 var sortWinners = function () {
     winners.sort(function(a, b) {
-        if (a.wealth() > b.wealth()) return 1;
-        if (a.wealth() < b.wealth()) return -1;
+        if (a.finishWealth > b.finishWealth) return 1;
+        if (a.finishWealth < b.finishWealth) return -1;
         return 0;
     });
 };
 var calcRecordW = function() {
-    if (winners[winners.length -1].wealth() > recordW) {
-        recordW = Math.round(winners[winners.length -1].wealth()*100)/100;
+    if (winners[winners.length -1].finishWealth > recordW) {
+        recordW = Math.round(winners[winners.length -1].finishWealth*100)/100;
     }
 };
 
@@ -79,25 +79,25 @@ function Histogram(p) {
     var buyAvg = function(ruleNum) {
         var sum = 0;
         //var wSum = 0;
-        for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
+        for (var i = winners.length; i > winners.length - lookBack && i > 0; i--) {
             //wSum += winners[i].wealth()
             var r = winners[i-1].getBuyRules();
             sum += r[ruleNum].pTrade;
         }
-        if (winners.length > lookback) {
-            return sum / lookback
+        if (winners.length > lookBack) {
+            return sum / lookBack
         } else {
             return sum / winners.length;
         }
     };
     var sellAvg = function(ruleNum) {
         var sum = 0;
-        for (var i = winners.length; i > winners.length - lookback && i > 0; i--) {
+        for (var i = winners.length; i > winners.length - lookBack && i > 0; i--) {
             var r = winners[i-1].getSellRules();
             sum += r[ruleNum].pTrade;
         }
-        if (winners.length > lookback) {
-            return sum / lookback
+        if (winners.length > lookBack) {
+            return sum / lookBack
         } else {
             return sum / winners.length;
         }
