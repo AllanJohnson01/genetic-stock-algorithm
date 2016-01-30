@@ -4,13 +4,13 @@
 function DNA() {
     this.genes = [];
     this.numOfGenes = 100;
-    this.firstDNA = function(mult) {
+    this.firstDNA = function() {
         for (var i = 0; i < this.numOfGenes; i++) {
             this.genes[i] = {
                 buyStockChangePer:  i/4,
-                buyPerToTrade:      mult,//(Math.random() * 100),
+                buyPercentToTrade:      (Math.random() * 100),
                 sellStockChangePer: i/4,
-                sellPerToTrade:     mult //(Math.random() * 100)
+                sellPercentToTrade:     (Math.random() * 100)
             };
         }
     };
@@ -30,27 +30,42 @@ function DNA() {
         //var r1 Math.random()*2;
         //r2 = Math.random()*2;
         for (var j = 0; j < this.genes.length; j++) {
-            this.genes[j].buyPerToTrade += 1;
-            this.genes[j].sellPerToTrade += -1;
+            this.genes[j].buyPercentToTrade += Math.random();
+            this.genes[j].sellPercentToTrade += -Math.random();
         }
     };
     this.negAlter = function () {
         //var r1 Math.random()*2;
         //r2 = Math.random()*2;
         for (var j = 0; j < this.genes.length; j++) {
-            this.genes[j].buyPerToTrade += -1;
-            this.genes[j].sellPerToTrade += 1;
+            this.genes[j].buyPercentToTrade += -Math.random();
+            this.genes[j].sellPercentToTrade += Math.random();
         }
     };
+    /*this.smRandAlter = function () {
+        for (var j = 0; j < this.genes.length; j++) {
+            var r1  = Math.random()*2;
+            var r2 = Math.random()*2;
+            this.genes[j].buyPercentToTrade += -1;
+            this.genes[j].sellPercentToTrade += 1;
+        }
+        for (var j = 0; j < this.genes.length; j++) {
+            var r1  =Math.random()*2;
+            var r2 = Math.random()*2;
+            this.genes[j].buyPercentToTrade += -1;
+            this.genes[j].sellPercentToTrade += 1;
+        }
+    };*/
+
     this.mutate = function(m) {
         for (var i = 0; i < this.numOfGenes; i++) {
             var r = Math.random();
             if (r < m) {
                 this.genes[i] = {
                     buyStockChangePer:  i/4,
-                    buyPerToTrade:      (Math.random() * 100),
+                    buyPercentToTrade:      (Math.random() * 100),
                     sellStockChangePer: i/4,
-                    sellPerToTrade:     (Math.random() * 100)
+                    sellPercentToTrade:     (Math.random() * 100)
                 };
             }
         }

@@ -18,9 +18,9 @@ var stockGraph = function(p) {
     var Population = require('./Population');
     var pop;
     var generation = 1;
-    var numOfInvestors = 25;
-    var mutationRate = 0.00;
-    var gen = [];
+    var numOfInvestors = 250;
+    var mutationRate = 0.02;
+    //var gen = [];
     var run = true;
     var SMAs = [];
     p.setup = function () {
@@ -41,7 +41,7 @@ var stockGraph = function(p) {
         p.frameRate(fRate);
         stock.price = priceChange();
         drawStockChart(stock.price);
-        for (s in SMAs) SMAs[s].draw();
+        for (var s = 0; s < SMAs.length; s++) SMAs[s].draw();
         pop.checkDecisions();
         stock.tradeDay++;
         /////////////////////////////////////// End of Generation
@@ -92,7 +92,7 @@ var stockGraph = function(p) {
     /////////////////////////////////
     var SMA = function(lastPoint, stock, periods, color) {
         this.lastPoint = lastPoint;
-        this.stock = stock;
+        //this.stock = stock;
         this.periods = periods;
         this.color = color;
     };

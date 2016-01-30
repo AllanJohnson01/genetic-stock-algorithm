@@ -3,7 +3,7 @@
  */
 require("p5");
 var popu, winners, numOfGenes;
-var lookback = 3;
+var lookback = 5;
 var recordW = 0;
 var avgW = 0;
 exports.setPop = function(pop) {
@@ -26,9 +26,9 @@ exports.setPop = function(pop) {
 };
 var popAvgW = function () {
     var pop = popu.getPopulation();
-    var allWealth = [];
+    //var allWealth = [];
     var sum = 0;
-    for (inv in pop) {
+    for (var inv = 0; inv < pop.length; inv++) {
         sum += pop[inv].wealth();
     }
     avgW = Math.round(sum/pop.length * 100)/100;

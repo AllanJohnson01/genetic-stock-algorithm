@@ -33,16 +33,15 @@ function Investor(config) {
             return a-b;
         }); //sort
         var half = Math.floor(gains.length/2);
-        for (var i in gains) {
+        for (var i = 0; i < gains.length; i++) {
             if (i > gains.length * 0.05 && i < gains.length * 0.95) {
                 sum += gains[i];
             }
         }
-        var avg = sum / gains.length;
-        var median = gains[half];
+        //var avg = sum / gains.length;
         //console.log("Median Gain: " + gains[half]);
         //console.log("Avg: " + avg);
-        return median;//find the median gain
+        return gains[half];//find the median gain
     };
     var buyRule = function(pOff, pTrade) {
         this.pOff = pOff;
@@ -71,8 +70,8 @@ function Investor(config) {
         }
     };
     for (var i = 0; i < this.dna.genes.length; i++) {
-        buyRules.push(new buyRule(this.dna.genes[i].buyStockChangePer, this.dna.genes[i].buyPerToTrade));
-        sellRules.push(new sellRule(this.dna.genes[i].sellStockChangePer, this.dna.genes[i].sellPerToTrade));
+        buyRules.push(new buyRule(this.dna.genes[i].buyStockChangePer, this.dna.genes[i].buyPercentToTrade));
+        sellRules.push(new sellRule(this.dna.genes[i].sellStockChangePer, this.dna.genes[i].sellPercentToTrade));
     }
 
     this.sellDecision = function() {

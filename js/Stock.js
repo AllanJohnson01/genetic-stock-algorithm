@@ -8,10 +8,9 @@ function Stock(config)  {
     this.price  = this.startPrice;
     this.neutralPrice = this.startPrice;
     this.tradeDay = 10;
-    this.apr = 30; // Todo This changes the direction of the market, but I need to change the map() and the scaling of the window.
+    this.apr = 0; // Todo This changes the direction of the market, but I need to change the map() and the scaling of the window.
     this.volatility = 0.16; // This affects the smoothness of the noise() - smaller numbers = smoother changes
     this.priceHistory = [this.price];
-    var i = 0;
     this.SMA = function(periods) {
         var sum = 0;
         for (var i = this.priceHistory.length; i > this.priceHistory.length - periods; i--) {
