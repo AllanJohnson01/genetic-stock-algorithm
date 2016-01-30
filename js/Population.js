@@ -5,7 +5,7 @@ var Investor = require('./Investor');
 var DNA = require('./DNA');
 
 function Population(mutationRate, numOfInvestors) {
-    this.numOfInvestors = numOfInvestors;
+    //this.numOfInvestors = numOfInvestors;
     var matingPool = [];
     var population = [];
     var generations = 0;
@@ -16,7 +16,7 @@ function Population(mutationRate, numOfInvestors) {
         population[i] = new Investor({dna: dna});
     }
 
-    for (inv in population) {
+    for (var inv = 0; inv < population.length; inv++) {
         var rules = population[inv].getBuyRules();
         //noinspection JSDuplicatedDeclaration
         for (var i = 0; i < rules.length; i++) {
@@ -119,9 +119,9 @@ function Population(mutationRate, numOfInvestors) {
     this.getWinners = function() {
         return histWinners;
     };
-    this.getGenerations = function () {
+    /*this.getGenerations = function () {
         return generations;
-    };
+    };*/
     this.getPopulation = function () {
         return population;
     }
