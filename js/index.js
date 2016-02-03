@@ -1,6 +1,8 @@
 /**
  * Created by adjohnso on 12/1/2015.
  */
+import Hello from './react/hello.jsx';
+import World from './react/world.jsx';
 var stock = require('./Stock');
 var histo = require('./histogram');
 
