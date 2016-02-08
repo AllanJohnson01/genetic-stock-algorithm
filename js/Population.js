@@ -84,15 +84,16 @@ function Population(mutationRate, numOfInvestors) {
         }*/
     };
 
-    this.reproduction = function() { //This repo function doesn't just mate, it keeps the best from the previous gen and copies of them that are slightly modified
+    //This repo function doesn't just mate, it keeps the best from the previous gen and copies of them that are slightly modified
+    this.reproduction = function() {
         for (var i = 0; i < population.length * 2 / 3; i++) {
             if (i < population.length) { //pick the top producing from previous generation. the investors should still be in order from the selection function
                 var cloneDNA = population[i].getDNA();
                 population[i] = new Investor({dna: cloneDNA});
-                modCloneDNA1 = population[i].getDNA();
+                var modCloneDNA1 = population[i].getDNA();
                 modCloneDNA1.posAlter();
                 population[i+1] = new Investor({dna: modCloneDNA1}); //Add a second investor with modified genes of the clone
-                modCloneDNA2 = population[i].getDNA();
+                var modCloneDNA2 = population[i].getDNA();
                 modCloneDNA2.negAlter();
                 population[i+2] = new Investor({dna: modCloneDNA2}); //Add a second investor with modified genes of the clone
                 i+=2;

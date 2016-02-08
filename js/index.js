@@ -1,10 +1,12 @@
 /**
  * Created by adjohnso on 12/1/2015.
  */
-import Hello from './react/hello.jsx';
-import World from './react/world.jsx';
+import Settings from './react/settings.jsx';
+console.log(Settings);
+import p5 from 'p5';
 var stock = require('./Stock');
 var histo = require('./histogram');
+
 
 var stockGraph = function(p) {
     var fRate = 60;

@@ -1,7 +1,7 @@
 /**
  * Created by adjohnso on 12/16/2015.
  */
-require("p5");
+import p5 from 'p5';
 var popu, winners, numOfGenes;
 var lookback = 5;
 var recordW = 0;
